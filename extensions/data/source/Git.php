@@ -26,8 +26,30 @@ class Git extends \lithium\data\Source {
     public function describe($entity, array $meta = array()) {}
     public function relationship($class, $type, $name, array $options = array()) {}
 
-    public function create($query, array $options = array()) {}
-    public function read($query, array $options = array()) {}
+    public function create($query, array $options = array()) {
+        switch($query) {
+        case "blob":
+            if($options['content']) {
+                if($sha1 = $this->repo->write($options['content'], 3)) {
+                    return $sha1;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function read($query, array $options = array()) {
+        switch($query) {
+        case "blob":
+            if($options['sha1']) {
+                if($content = $this->repo->lookup($options['sha1'])) {
+                    return $content;
+                }
+            }
+        }
+        return false;
+    }
+
     public function update($query, array $options = array()) {}
     public function delete($query, array $options = array()) {}
 }

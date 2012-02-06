@@ -7,6 +7,8 @@ use \li3_git\extensions\data\source\Git;
 
 class GitTest extends \lithium\test\Unit {
 
+    private $testBlob = 'This is a test blob';
+
     public function setUp() {
 
         $mockRepo = DIRNAME(DIRNAME(DIRNAME(DIRNAME(__DIR__)))) . '/mocks/data/testRepo';
@@ -27,6 +29,16 @@ class GitTest extends \lithium\test\Unit {
 
     public function testConnect() {
         $this->assertTrue($this->git->isConnected());
+    }
+
+    public function testCreateBlob() {
+        $this->assertTrue($this->git->create('blob', array('content' => $this->testBlob)));
+    }
+
+    public function testReadBlob() {
+        $sha1 = $this->git->create('blob', array('content' => $this->testBlob));
+
+        $this->assertEqual($this->testBlob, $this->git->read('blob', array('sha1' => $sha1)));
     }
 }
 ?>
