@@ -3,11 +3,15 @@ namespace li3_git\tests\cases\extensions\data\source;
 
 use \lithium\data\Connections;
 use \lithium\core\Libraries;
+use \lithium\data\model\Query;
 use \li3_git\extensions\data\source\Git;
 
 class GitTest extends \lithium\test\Unit {
 
-    private $testBlob = 'This is a test blob';
+    private $testFile = array(
+        'name' => 'testfile.txt',
+        'content' => 'This is the content of testFile'
+    );
 
     public function setUp() {
 
@@ -31,14 +35,15 @@ class GitTest extends \lithium\test\Unit {
         $this->assertTrue($this->git->isConnected());
     }
 
-    public function testCreateBlob() {
-        $this->assertTrue($this->git->create('blob', array('content' => $this->testBlob)));
-    }
+    public function testCreate() {
+        $query = new Query(array(
+            'model' => 'li3_git\tests\mocks\data\MockModel',
+            'data' => $this->testFile
+        ));
 
-    public function testReadBlob() {
-        $sha1 = $this->git->create('blob', array('content' => $this->testBlob));
+        $result = $this->git->create($query);
 
-        $this->assertEqual($this->testBlob, $this->git->read('blob', array('sha1' => $sha1)));
+        $this->assertTrue($result);
     }
 }
 ?>
